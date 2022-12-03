@@ -1,6 +1,14 @@
 #include <cfloat>
+#include <cstdlib>
+
+// c++17 gives us an OS-agnistic directory separator char
+#include <filesystem>
+
 #include "ObjModel.h"
 #include "PPMImage.h"
+
+// for string::endsWith
+#include "utility.h"
 
 ObjModel::ObjModel(void)
 {
@@ -130,6 +138,35 @@ void ObjModel::ReadFile(string fileName)
 		else if (temp == "map_Kd")
 		{
 			mtlFile >> mtl->textureFileName;
+
+			// Shell out to imagemagic to do an on-the-fly conversion to PPM
+			if (!endsWith(mtl->textureFileName, ".ppm") || endsWith(mtl->textureFileName, ".PPM")) {
+				std::string original_texture_file_name(mtl->textureFileName);
+
+				replaceAll(mtl->textureFileName, ".jpg", ".ppm");
+				replaceAll(mtl->textureFileName, ".jpeg", ".ppm");
+				replaceAll(mtl->textureFileName, ".png", ".ppm");
+				replaceAll(mtl->textureFileName, ".JPG", ".ppm");
+				replaceAll(mtl->textureFileName, ".JPEG", ".ppm");
+				replaceAll(mtl->textureFileName, ".PNG", ".ppm");
+				// TODO any other image type possibilities? Shotgunning it here,
+				// we could use std::filesystem to parse off an extension dynamically, but this
+				// already strays further than the assignment wants.
+
+				if (!std::filesystem::exists(mtl->textureFileName)) {
+					std::string cmd;
+					cmd.append("convert \"");
+					cmd.append(path+std::filesystem::path::preferred_separator+original_texture_file_name);
+					cmd.append("\" -flip ");
+					cmd.append("\"");
+					cmd.append(path+std::filesystem::path::preferred_separator+mtl->textureFileName);
+					cmd.append("\"");
+
+					std::cout << "Conversion command: " << cmd << std::endl;
+					system(cmd.c_str());
+				}
+				
+			}
 
 			PPMImage texture;
 			texture.ReadFile(path + mtl->textureFileName);
