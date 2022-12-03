@@ -650,7 +650,8 @@ int main(int argc, char** argv)
 
 	// Load the 3D models.
 	trafficLight.ReadFile(models_directory+"/TrafficLight.obj");
-	car.ReadFile(models_directory+"/Honda_S2000_inch.obj");
+	//car.ReadFile(models_directory+"/Honda_S2000_inch.obj");
+	car.ReadFile(models_directory+"/taxi.obj");
 	surveillanceCamera.ReadFile(models_directory+"/camera.obj");
 
 	// Bonus models
