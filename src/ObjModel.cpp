@@ -1,6 +1,3 @@
-
-#include <unistd.h>
-
 #include <cfloat>
 #include "ObjModel.h"
 #include "PPMImage.h"
@@ -63,8 +60,6 @@ void ObjModel::ReadFile(string fileName)
 	string temp;
 	char c, buf[256];
 
-	//std::cout << "ObjModel::ReadFile Reading objFile from " << fileName << std::endl;
-
 	ifstream objFile(fileName);
 
 	if (!objFile.is_open())
@@ -85,14 +80,11 @@ void ObjModel::ReadFile(string fileName)
 	c = objFile.peek();
 	if (c == 'm')
 	{
-		objFile >> temp; // Read "mtllib" token into temp (unused)
-		objFile >> temp; // Read .mtl file name into temp
+		objFile >> temp;
+		objFile >> temp;
 	}
 
 	string mtlFileName = path + temp;
-
-	//std::cout << "ObjModel::ReadFile Reading mtlFile from " << mtlFileName << std::endl;
-
 	ifstream mtlFile(mtlFileName);
 
 	if (!mtlFile.is_open())
@@ -115,8 +107,6 @@ void ObjModel::ReadFile(string fileName)
 	Material *mtl = NULL;
 	while (!mtlFile.eof())
 	{
-		//std::cout << "ObjModel::ReadFile while (!mtlFile.eof()) temp=" << temp << std::endl; sleep(1);
-		
 		if (temp == "newmtl")
 		{
 			mtlFile >> mtlName;
@@ -141,7 +131,6 @@ void ObjModel::ReadFile(string fileName)
 		{
 			mtlFile >> mtl->textureFileName;
 
-			//std::cout << "ObjModel::ReadFile Reading PPMImage from " << path + mtl->textureFileName << std::endl;
 			PPMImage texture;
 			texture.ReadFile(path + mtl->textureFileName);
 
@@ -170,7 +159,6 @@ void ObjModel::ReadFile(string fileName)
 
 	while (!objFile.eof())
 	{
-		//std::cout << "ObjModel::ReadFile while (!objFile.eof()) temp=" << temp << std::endl;
 		bool readNewLine = false;
 		float x, y, z;
 		
@@ -355,12 +343,9 @@ void ObjModel::DrawMaterials(string mtlName, bool opaque)
 
 void ObjModel::Draw()
 {
-	/// \cond DEVELOPER
-	/// Some comments for developers.
-	/// \endcond
 	for (int i = 0; i < this->opaqueMaterials.size(); i++)
 		this->DrawMaterials(opaqueMaterials[i], true);
-	
+
 	for (int i = 0; i < this->translucentMaterials.size(); i++)
 		this->DrawMaterials(translucentMaterials[i], false);
 }
