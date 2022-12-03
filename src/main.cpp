@@ -204,9 +204,11 @@ void drawScene()
 		glRotatef(carDirection, 0, 1, 0);
 
 		glTranslatef(0.0f, 0.0f, center_offset);
-		glScalef(1.0/26.0f, 1.0/26.0f, 1.0/26.0f);
+		//glScalef(1.0/26.0f, 1.0/26.0f, 1.0/26.0f);
+		glScalef(1.25f, 1.25f, 1.25f);
 		
 		car.Draw();
+
 	glPopMatrix();
 
 }
@@ -314,7 +316,7 @@ void init()
 	// 	glVertex3f(-0.1, 0.05, -1000);
 	// glEnd();
 
-	// Stipes are white
+	// Stripes are white
 	glColor3f(1, 1, 1);
 	int inner_box_size = 16;
 

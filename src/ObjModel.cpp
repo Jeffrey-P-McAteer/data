@@ -153,7 +153,7 @@ void ObjModel::ReadFile(string fileName)
 				// we could use std::filesystem to parse off an extension dynamically, but this
 				// already strays further than the assignment wants.
 
-				if (!std::filesystem::exists(mtl->textureFileName)) {
+				if (!std::filesystem::exists(path+std::filesystem::path::preferred_separator+mtl->textureFileName)) {
 					std::string cmd;
 					cmd.append("convert \"");
 					cmd.append(path+std::filesystem::path::preferred_separator+original_texture_file_name);
