@@ -115,14 +115,24 @@ void specialKey(int key, int x, int y)
 	if (key == GLUT_KEY_UP)
 	{
 		// acceleration
-		localCarSpeed.y += 0.90;
+		if (localCarSpeed.y < 0.5) {
+			localCarSpeed.y += 0.65;
+		}
+		else {
+			localCarSpeed.y *= 1.18;
+		}
 		
 	}
 
 	if (key == GLUT_KEY_DOWN)
 	{
 		// deceleration
-		localCarSpeed.y -= 0.90;
+		if (localCarSpeed.y > -0.5) {
+			localCarSpeed.y -= 0.65;
+		}
+		else {
+			localCarSpeed.y *= 1.18;
+		}
 
 	}
 }
