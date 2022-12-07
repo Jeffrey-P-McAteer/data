@@ -37,6 +37,7 @@ ObjModel bench01;
 int carID; ///< Display List ID for car
 int surveillanceCameraID; ///< Display list ID for surveillance camera
 int terrainID; ///< Display list ID for terrain
+int raised_terrainID; // Bugfix for main view render glitch
 
 int bench01ID;
 
@@ -217,11 +218,111 @@ void drawScene()
 		//glScalef(1.0/26.0f, 1.0/26.0f, 1.0/26.0f);
 		glScalef(1.25f, 1.25f, 1.25f);
 		
-		car.Draw();
+		//car.Draw();
+		glCallList(carID);
+
 
 	glPopMatrix();
 
+	// Some bug above means we need to re-draw the terrain 0.5 units above to fix the glitch.
+	glCallList(raised_terrainID);
+
+
 }
+
+
+void draw_terrain(float y_offset) {
+	// Grass
+	glColor3f(0, 0.7, 0);
+	glBegin(GL_QUADS);
+		glVertex3f(-1000, 0 + y_offset, 1000);
+		glVertex3f(-10, 0 + y_offset, 1000);
+		glVertex3f(-10, 0 + y_offset, 10);
+		glVertex3f(-1000, 0 + y_offset, 10);
+
+		glVertex3f(10, 0 + y_offset, 1000);
+		glVertex3f(1000, 0 + y_offset, 1000);
+		glVertex3f(1000, 0 + y_offset, 10);
+		glVertex3f(10, 0 + y_offset, 10);
+
+		glVertex3f(10, 0 + y_offset, -10);
+		glVertex3f(1000, 0 + y_offset, -10);
+		glVertex3f(1000, 0 + y_offset, -1000);
+		glVertex3f(10, 0 + y_offset, -1000);
+
+		glVertex3f(-1000, 0 + y_offset, -10);
+		glVertex3f(-10, 0 + y_offset, -10);
+		glVertex3f(-10, 0 + y_offset, -1000);
+		glVertex3f(-1000, 0 + y_offset, -1000);
+	glEnd();
+
+	// Roads
+	glBegin(GL_QUADS);
+		glColor3f(0.2, 0.2, 0.2);
+
+		glVertex3f(-10, 0 + y_offset, 1000);
+		glVertex3f(10, 0 + y_offset, 1000);
+		glVertex3f(10, 0 + y_offset, -1000);
+		glVertex3f(-10, 0 + y_offset, -1000);
+
+		glVertex3f(-1000, 0 + y_offset, 10);
+		glVertex3f(1000, 0 + y_offset, 10);
+		glVertex3f(1000, 0 + y_offset, -10);
+		glVertex3f(-1000, 0 + y_offset, -10);
+	glEnd();
+
+	// Yellow line
+	// glBegin(GL_POLYGON);
+	// 	glColor3f(1, 1, 0);
+	// 	glVertex3f(-0.1, 0.05, 1000);
+	// 	glVertex3f(0.1, 0.05, 1000);
+	// 	glVertex3f(0.1, 0.05, -1000);
+	// 	glVertex3f(-0.1, 0.05, -1000);
+	// glEnd();
+
+	// Stripes are white
+	glColor3f(1, 1, 1);
+	int inner_box_size = 16;
+
+	int stripe_len = 9;
+	int stripe_stride = 20;
+	for (int stripe_begin=-1000; stripe_begin < 1000; stripe_begin += stripe_stride) {
+		if (stripe_begin >= -inner_box_size && stripe_begin <= inner_box_size) {
+			continue; // No stripes in center line
+		}
+		// Draw a stripe north-south
+		glBegin(GL_POLYGON);
+			glVertex3f(-0.1, 0.05 + y_offset, stripe_begin);
+			glVertex3f(0.1, 0.05 + y_offset, stripe_begin);
+			glVertex3f(0.1, 0.05 + y_offset, stripe_begin-stripe_len);
+			glVertex3f(-0.1, 0.05 + y_offset, stripe_begin-stripe_len);
+		glEnd();
+		// Draw a stripe east-west
+		glBegin(GL_POLYGON);
+			glVertex3f(stripe_begin, 0.05 + y_offset, -0.1);
+			glVertex3f(stripe_begin, 0.05 + y_offset, 0.1);
+			glVertex3f(stripe_begin-stripe_len, 0.05 + y_offset, 0.1);
+			glVertex3f(stripe_begin-stripe_len, 0.05 + y_offset, -0.1);
+		glEnd();
+
+	}
+
+	// Draw 4 white blocks for stop bars at the lights
+	int bar_height = 3;
+	for (auto rotation : {0, 90, 180, 270}) {
+			glRotatef(rotation, 0, 1, 0);
+			glBegin(GL_POLYGON);
+				glVertex3f(   0, 0.05 + y_offset, 12);
+				glVertex3f(   9, 0.05 + y_offset, 12);
+				glVertex3f(   9, 0.05 + y_offset, 12-bar_height);
+				glVertex3f(   0, 0.05 + y_offset, 12-bar_height);
+			glEnd();
+	}
+	// Set rotation back after using it to avoid calculating stop bar line coordinates
+	glRotatef(180, 0, 1, 0);
+
+}
+
 
 /// Initialization.
 /// Set up lighting, generate display lists for the surveillance camera, 
@@ -277,100 +378,19 @@ void init()
 	terrainID = glGenLists(1);
 	glNewList(terrainID, GL_COMPILE);
 	glDisable(GL_LIGHTING);
-
-	// Grass
-	glColor3f(0, 0.7, 0);
-	glBegin(GL_QUADS);
-		glVertex3f(-1000, 0, 1000);
-		glVertex3f(-10, 0, 1000);
-		glVertex3f(-10, 0, 10);
-		glVertex3f(-1000, 0, 10);
-
-		glVertex3f(10, 0, 1000);
-		glVertex3f(1000, 0, 1000);
-		glVertex3f(1000, 0, 10);
-		glVertex3f(10, 0, 10);
-
-		glVertex3f(10, 0, -10);
-		glVertex3f(1000, 0, -10);
-		glVertex3f(1000, 0, -1000);
-		glVertex3f(10, 0, -1000);
-
-		glVertex3f(-1000, 0, -10);
-		glVertex3f(-10, 0, -10);
-		glVertex3f(-10, 0, -1000);
-		glVertex3f(-1000, 0, -1000);
-	glEnd();
-
-	// Roads
-	glBegin(GL_QUADS);
-		glColor3f(0.2, 0.2, 0.2);
-
-		glVertex3f(-10, 0, 1000);
-		glVertex3f(10, 0, 1000);
-		glVertex3f(10, 0, -1000);
-		glVertex3f(-10, 0, -1000);
-
-		glVertex3f(-1000, 0, 10);
-		glVertex3f(1000, 0, 10);
-		glVertex3f(1000, 0, -10);
-		glVertex3f(-1000, 0, -10);
-	glEnd();
-
-	// Yellow line
-	// glBegin(GL_POLYGON);
-	// 	glColor3f(1, 1, 0);
-	// 	glVertex3f(-0.1, 0.05, 1000);
-	// 	glVertex3f(0.1, 0.05, 1000);
-	// 	glVertex3f(0.1, 0.05, -1000);
-	// 	glVertex3f(-0.1, 0.05, -1000);
-	// glEnd();
-
-	// Stripes are white
-	glColor3f(1, 1, 1);
-	int inner_box_size = 16;
-
-	int stripe_len = 9;
-	int stripe_stride = 20;
-	for (int stripe_begin=-1000; stripe_begin < 1000; stripe_begin += stripe_stride) {
-		if (stripe_begin >= -inner_box_size && stripe_begin <= inner_box_size) {
-			continue; // No stripes in center line
-		}
-		// Draw a stripe north-south
-		glBegin(GL_POLYGON);
-			glVertex3f(-0.1, 0.05, stripe_begin);
-			glVertex3f(0.1, 0.05, stripe_begin);
-			glVertex3f(0.1, 0.05, stripe_begin-stripe_len);
-			glVertex3f(-0.1, 0.05, stripe_begin-stripe_len);
-		glEnd();
-		// Draw a stripe east-west
-		glBegin(GL_POLYGON);
-			glVertex3f(stripe_begin, 0.05, -0.1);
-			glVertex3f(stripe_begin, 0.05, 0.1);
-			glVertex3f(stripe_begin-stripe_len, 0.05, 0.1);
-			glVertex3f(stripe_begin-stripe_len, 0.05, -0.1);
-		glEnd();
-
-	}
-
-	// Draw 4 white blocks for stop bars at the lights
-	int bar_height = 3;
-	for (auto rotation : {0, 90, 180, 270}) {
-			glRotatef(rotation, 0, 1, 0);
-			glBegin(GL_POLYGON);
-				glVertex3f(   0, 0.05, 12);
-				glVertex3f(   9, 0.05, 12);
-				glVertex3f(   9, 0.05, 12-bar_height);
-				glVertex3f(   0, 0.05, 12-bar_height);
-			glEnd();
-	}
-	// Set rotation back after using it to avoid calculating stop bar line coordinates
-	glRotatef(180, 0, 1, 0);
-
-
-
+	draw_terrain(0.0);
 	glEndList();
+
+	raised_terrainID = glGenLists(1);
+	glNewList(raised_terrainID, GL_COMPILE);
+	glDisable(GL_LIGHTING);
+	draw_terrain(0.02);
+	glEndList();
+
+
 }
+
+
 
 /// Display callback.
 /// Displays 4 viewports.  For for each viewport, set up position and size, projection, 
@@ -664,6 +684,7 @@ int main(int argc, char** argv)
 	trafficLight.ReadFile(models_directory+"/TrafficLight.obj");
 	//car.ReadFile(models_directory+"/Honda_S2000_inch.obj");
 	car.ReadFile(models_directory+"/taxi.obj");
+
 	surveillanceCamera.ReadFile(models_directory+"/camera.obj");
 
 	// Bonus models
