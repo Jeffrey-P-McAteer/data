@@ -6,7 +6,7 @@ newmtl us_taxi_body1
 Ka 0.000000 0.000000 0.000000
 Kd 0.505882 0.423529 0.078431
 Ks 0.330000 0.330000 0.330000
-map_Kd taxi/us_taxi_body1.jpg
+map_Kd taxi/us_taxi_body1.ppm
 
 newmtl FrontColor
 Ka 0.000000 0.000000 0.000000
@@ -23,17 +23,17 @@ newmtl plates_us1
 Ka 0.000000 0.000000 0.000000
 Kd 0.588235 0.635294 0.686275
 Ks 0.330000 0.330000 0.330000
-map_Kd taxi/plates_us1.jpg
+map_Kd taxi/plates_us1.ppm
 
 newmtl saloon_wheel1
 Ka 0.000000 0.000000 0.000000
 Kd 0.149020 0.149020 0.149020
 Ks 0.330000 0.330000 0.330000
-map_Kd taxi/saloon_wheel1.jpg
+map_Kd taxi/saloon_wheel1.ppm
 
 newmtl chassis_gen1
 Ka 0.000000 0.000000 0.000000
 Kd 0.149020 0.152941 0.145098
 Ks 0.330000 0.330000 0.330000
-map_Kd taxi/chassis_gen1.jpg
+map_Kd taxi/chassis_gen1.ppm
 
