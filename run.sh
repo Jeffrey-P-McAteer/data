@@ -15,13 +15,14 @@ else
 fi
 
 g++ -c -o build/ObjModel.o src/ObjModel.cpp "${CPP_ARGS[@]}" &
+g++ -c -o build/BillBoard.o src/BillBoard.cpp "${CPP_ARGS[@]}" &
 g++ -c -o build/TrafficLight.o src/TrafficLight.cpp "${CPP_ARGS[@]}" &
 g++ -c -o build/utility.o src/utility.cpp "${CPP_ARGS[@]}" &
 g++ -c -o build/PPMImage.o src/PPMImage.cpp "${CPP_ARGS[@]}" &
 
 wait
 
-g++ -o build/main src/main.cpp build/ObjModel.o build/TrafficLight.o build/utility.o build/PPMImage.o "${CPP_ARGS[@]}"
+g++ -o build/main src/main.cpp build/ObjModel.o build/BillBoard.o build/TrafficLight.o build/utility.o build/PPMImage.o "${CPP_ARGS[@]}"
 
 if [ -z "$DEBUG" ] ; then
   ./build/main $1 $2 $3 $4 $5 $6

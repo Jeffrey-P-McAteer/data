@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <string>
-#include <gl/glut.h>
+#include <GL/glut.h>
 
-#include "PPMImage.h";
-#include "Vector3D.h";
+#include "PPMImage.h"
+#include "Vector3D.h"
 
 using namespace std;
 

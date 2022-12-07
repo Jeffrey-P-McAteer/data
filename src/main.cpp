@@ -22,6 +22,7 @@
 #include "ObjModel.h"
 #include "TrafficLight.h"
 #include "utility.h"
+#include "BillBoard.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ int updateInterval = 20; ///< Update interval for the update function in milisec
 ObjModel car;
 ObjModel surveillanceCamera;
 TrafficLight trafficLight;
+Billboard billboard_a;
 
 ObjModel bench01;
 
@@ -208,6 +210,12 @@ void drawScene()
 		glCallList(surveillanceCameraID);
 	glPopMatrix();
 
+	// Draw all billboard objects
+	glPushMatrix();
+		billboard_a.Draw();
+	glPopMatrix();
+
+
 	// Draw the car.
 	glPushMatrix();
 		float center_offset = 3.0f; // no car.GetCenter().z? Different coordinate system?
@@ -223,6 +231,7 @@ void drawScene()
 
 
 	glPopMatrix();
+
 
 	// Some bug above means we need to re-draw the terrain 0.5 units above to fix the glitch.
 	glCallList(raised_terrainID);
@@ -686,6 +695,12 @@ int main(int argc, char** argv)
 	car.ReadFile(models_directory+"/taxi.obj");
 
 	surveillanceCamera.ReadFile(models_directory+"/camera.obj");
+
+	// Define billboard object details
+	billboard_a.ReadFile("");
+	//billboard_a.SetSize();
+	billboard_a.SetLocation({0.0f, 0.0f, 0.0f});
+	billboard_a.SetOrientation(0.0f);
 
 	// Bonus models
 	// https://www.cgtrader.com/free-3d-models/plant/conifer/2-diffrent-tree-kousa-dogwood
