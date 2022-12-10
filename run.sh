@@ -14,6 +14,8 @@ else
   CPP_ARGS=(-g -std=c++17 -Isrc -lglut -lGLU -lGL -lglfw -lGLEW)
 fi
 
+rm build/*.o
+
 g++ -c -o build/ObjModel.o src/ObjModel.cpp "${CPP_ARGS[@]}" &
 g++ -c -o build/BillBoard.o src/BillBoard.cpp "${CPP_ARGS[@]}" &
 g++ -c -o build/TrafficLight.o src/TrafficLight.cpp "${CPP_ARGS[@]}" &

@@ -36,6 +36,7 @@ Billboard billboard_a;
 
 ObjModel bench01;
 
+int billboard_aID;
 int carID; ///< Display List ID for car
 int surveillanceCameraID; ///< Display list ID for surveillance camera
 int terrainID; ///< Display list ID for terrain
@@ -212,7 +213,8 @@ void drawScene()
 
 	// Draw all billboard objects
 	glPushMatrix();
-		billboard_a.Draw();
+		//billboard_a.Draw();
+		glCallList(billboard_aID);
 	glPopMatrix();
 
 
@@ -396,6 +398,11 @@ void init()
 	draw_terrain(0.02);
 	glEndList();
 
+	billboard_aID = glGenLists(1);
+	glNewList(billboard_aID, GL_COMPILE);
+	billboard_a.Draw();
+	glEndList();
+
 
 }
 
@@ -562,6 +569,9 @@ void display()
 void keyboard(unsigned char key, int x, int y)
 {
 	std::cout << "keyboard(" << key << ", " << x << ", " << y << ")" << std::endl;
+	
+	std::cout << "carPosition = {x:" << carPosition.x << " y:" << carPosition.y << " z:" << carPosition.z << "}" << std::endl;
+
 	switch(key)
 	{
 	case 'r':
@@ -690,21 +700,21 @@ int main(int argc, char** argv)
   std::cout << "Found Model directory at " << models_directory << std::endl;
 
 	// Load the 3D models.
-	trafficLight.ReadFile(models_directory+"/TrafficLight.obj");
+	trafficLight.ReadFile(models_directory+std::filesystem::path::preferred_separator+"TrafficLight.obj");
 	//car.ReadFile(models_directory+"/Honda_S2000_inch.obj");
-	car.ReadFile(models_directory+"/taxi.obj");
+	car.ReadFile(models_directory+std::filesystem::path::preferred_separator+"taxi.obj");
 
 	surveillanceCamera.ReadFile(models_directory+"/camera.obj");
 
 	// Define billboard object details
-	billboard_a.ReadFile("");
-	//billboard_a.SetSize();
-	billboard_a.SetLocation({0.0f, 0.0f, 0.0f});
+	billboard_a.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Old-Dominion-Monarchs-logo.jpg");
+	billboard_a.SetSize(20.0, 10.0);
+	billboard_a.SetLocation({20.0f, 0.0f, 20.0f});
 	billboard_a.SetOrientation(0.0f);
 
 	// Bonus models
 	// https://www.cgtrader.com/free-3d-models/plant/conifer/2-diffrent-tree-kousa-dogwood
-	bench01.ReadFile(models_directory+"/Bench.obj");
+	bench01.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Bench.obj");
 
 	std::cout << "before init()" << std::endl;
 	init();
