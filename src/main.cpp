@@ -33,10 +33,12 @@ ObjModel car;
 ObjModel surveillanceCamera;
 TrafficLight trafficLight;
 Billboard billboard_a;
+Billboard billboard_b;
 
 ObjModel bench01;
 
 int billboard_aID;
+int billboard_bID;
 int carID; ///< Display List ID for car
 int surveillanceCameraID; ///< Display list ID for surveillance camera
 int terrainID; ///< Display list ID for terrain
@@ -215,6 +217,11 @@ void drawScene()
 	glPushMatrix();
 		//billboard_a.Draw();
 		glCallList(billboard_aID);
+	glPopMatrix();
+
+	glPushMatrix();
+		//billboard_b.Draw();
+		glCallList(billboard_bID);
 	glPopMatrix();
 
 
@@ -401,6 +408,11 @@ void init()
 	billboard_aID = glGenLists(1);
 	glNewList(billboard_aID, GL_COMPILE);
 	billboard_a.Draw();
+	glEndList();
+
+	billboard_bID = glGenLists(1);
+	glNewList(billboard_bID, GL_COMPILE);
+	billboard_b.Draw();
 	glEndList();
 
 
@@ -708,9 +720,14 @@ int main(int argc, char** argv)
 
 	// Define billboard object details
 	billboard_a.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Old-Dominion-Monarchs-logo.jpg");
-	billboard_a.SetSize(20.0, 10.0);
-	billboard_a.SetLocation({20.0f, 0.0f, 20.0f});
-	billboard_a.SetOrientation(0.0f);
+	billboard_a.SetSize(14.0, -1);
+	billboard_a.SetLocation({0.0f, 5.2f, -20.0f}); // y value indicates billboard height
+	billboard_a.SetOrientation(270.0f + 45.0f);
+
+	billboard_b.ReadFile(models_directory+std::filesystem::path::preferred_separator+"speed-limit-25.jpg");
+	billboard_b.SetSize(-1, 2.0);
+	billboard_b.SetLocation({-20.0f, 4.2f, -16.0f}); // y value indicates billboard height
+	billboard_b.SetOrientation(270.0f + 45.0f);
 
 	// Bonus models
 	// https://www.cgtrader.com/free-3d-models/plant/conifer/2-diffrent-tree-kousa-dogwood

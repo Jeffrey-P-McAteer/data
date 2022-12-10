@@ -60,10 +60,18 @@ void Billboard::ReadFile(string fileName)
 
 void Billboard::SetSize(float width, float height)
 {
-  // Safety: negative values are ignored
-  if (width > 0.0 && height > 0.0) {
+  // Safety: negative values mean calculate the ratio from this->textureImage.width / .height
+  if (width > 0.0) {
   	this->width = width;
+  }
+  if (height > 0.0) {
     this->height = height;
+  }
+  if (width < 0.0) {
+    this->width = this->height * ((double)  this->textureImage.width / (double) this->textureImage.height);
+  }
+  if (height < 0.0) {
+    this->height = this->width * ((double)  this->textureImage.height / (double) this->textureImage.width);
   }
 }
 
@@ -86,21 +94,21 @@ void Billboard::Draw()
 
 	// Use glEnable() and glDisable() to change OpenGL states.
 
-  float pillar_h = 5.9f;
+  float pillar_h = this->location.y;
   float pillar_w = 0.45f;
 
   // Draw pillar as a rectangle
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_BLEND);
-  
+
   glPushMatrix();
+    glRotatef(this->orientation, 0, 1, 0);
     glTranslatef(
       this->location.x,
-      this->location.y,
+      0.0f, // this->location.y,
       this->location.z
     );
     glScalef(1.0, 1.0, 1.0);
-    glRotatef(this->orientation, 0, 1, 0);
 
     glBegin(GL_POLYGON);
       glColor3f(0.0f, 0.0f, 0.0f);
@@ -134,13 +142,13 @@ void Billboard::Draw()
 
 
   glPushMatrix();
+    glRotatef(this->orientation, 0, 1, 0);
     glTranslatef(
       this->location.x,
-      this->location.y + pillar_h,
+      this->location.y,
       this->location.z
     );
     glScalef(1.0, 1.0, 1.0);
-    glRotatef(this->orientation, 0, 1, 0);
 
     glBegin(GL_POLYGON);
         glColor3f(1, 1, 1);
@@ -149,16 +157,13 @@ void Billboard::Draw()
         glVertex3f(-(this->width)/2.0f, this->height,    (this->width) / 2.0f);
 
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(0,                   this->height,    0.0);
+        glVertex3f((this->width) / 2.0f,                   this->height,    -(this->width) / 2.0f);
         
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(0,                   0.0,             0.0);
+        glVertex3f((this->width) / 2.0f,                   0.0,             -(this->width) / 2.0f);
         
         glTexCoord2f(0.0, 0.0);
         glVertex3f(-(this->width)/2.0f, 0.0,             (this->width) / 2.0f);
-        
-        glTexCoord2f(0.0, 1.0);
-        glVertex3f(-(this->width)/2.0f, this->height,    (this->width) / 2.0f);
 
     glEnd();
 
