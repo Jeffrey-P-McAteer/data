@@ -9,6 +9,9 @@
 #include <sstream>
 #include <string>
 
+#include <iomanip>
+#include <ctime>
+
 #if __cplusplus < 201703L
 	#error "Must compile using C++17 or better!"
 #endif
@@ -63,6 +66,9 @@ int winWidth; ///< Width of OpenGL window
 int winHeight; ///< Height of OpenGL window
 int sWidth; ///< Width of the small viewport
 int sHeight; ///< Height of the small viewport
+
+// Forward declarations
+void save_snapshot();
 
 /// Update the small viewports' size automatically.
 /// \param w Width of the OpenGL window
@@ -615,17 +621,21 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	
 	// Forward WASD as arrow key events
-	case 'w':
-		specialKey(GLUT_KEY_UP, x, y);
-		break;
-	case 'a':
-		specialKey(GLUT_KEY_LEFT, x, y);
-		break;
+	// case 'w':
+	// 	specialKey(GLUT_KEY_UP, x, y);
+	// 	break;
+	// case 'a':
+	// 	specialKey(GLUT_KEY_LEFT, x, y);
+	// 	break;
+	// case 's':
+	// 	specialKey(GLUT_KEY_DOWN, x, y);
+	// 	break;
+	// case 'd':
+	// 	specialKey(GLUT_KEY_RIGHT, x, y);
+	// 	break;
+
 	case 's':
-		specialKey(GLUT_KEY_DOWN, x, y);
-		break;
-	case 'd':
-		specialKey(GLUT_KEY_RIGHT, x, y);
+		save_snapshot();
 		break;
 
 	case 'q':
@@ -675,6 +685,56 @@ void update()
 		}
 		// States circle back
 	}
+
+}
+
+void save_snapshot() {
+  if (!std::filesystem::is_directory("snapshots") || !std::filesystem::exists("snapshots")) { // Check if snapshots folder exists
+		std::filesystem::create_directory("snapshots"); // create snapshots folder
+  }
+  
+  std::ostringstream oss;
+  auto t = std::time(nullptr);
+  auto tm = *std::localtime(&t);
+  oss << std::put_time(&tm, "%d-%m-%Y_%H-%M-%S");
+
+  std::string snapshot_ppm_filename;
+	snapshot_ppm_filename += "snapshots";
+  snapshot_ppm_filename += std::filesystem::path::preferred_separator;
+  snapshot_ppm_filename += oss.str();
+  snapshot_ppm_filename += ".ppm";
+
+  std::cout << "Saving snapshot to " << snapshot_ppm_filename << std::endl;
+
+  PPMImage ppm_img_o;
+  ppm_img_o.AllocateMemory(winWidth, winHeight);
+
+  if (ppm_img_o.image == nullptr) {
+  	return; // alloc failure
+  }
+
+  glReadnPixels(0, 0, winWidth, winHeight, GL_RGB, GL_UNSIGNED_BYTE, (winWidth * winHeight * 3), ppm_img_o.image);
+
+  // Flip to match expected display coordinates
+  ppm_img_o.VerticalFlip();
+
+  //ppm_img_o.WriteFile(snapshot_ppm_filename, "P6"); // binary format is smaller
+  ppm_img_o.WriteFile(snapshot_ppm_filename, "P3"); // binary format is smaller
+
+  // Finally shell out to imagemagic to convert to jpg
+  std::string snapshot_jpg_filename(snapshot_ppm_filename);
+	replaceAll(snapshot_jpg_filename, ".ppm", ".jpg");
+
+	std::string cmd;
+  cmd.append("convert \"");
+  cmd.append(snapshot_ppm_filename);
+  cmd.append("\" ");
+  cmd.append("\"");
+  cmd.append(snapshot_jpg_filename);
+  cmd.append("\"");
+
+  std::cout << "Conversion command: " << cmd << std::endl;
+  system(cmd.c_str());
 
 }
 

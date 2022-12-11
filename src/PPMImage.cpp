@@ -3,12 +3,12 @@
 
 PPMImage::PPMImage(void)
 {
-	image = NULL;
+	image = nullptr;
 }
 
 PPMImage::~PPMImage(void)
 {
-	if (image != NULL)
+	if (image != nullptr)
 		delete[] image;
 }
 
@@ -123,8 +123,40 @@ void PPMImage::CheckComment()
 
 void PPMImage::VerticalFlip()
 {
-	unsigned char* flippedImage;
+	if (image == nullptr) {
+		return; // refuse to flip null image
+	}
+
+	unsigned char* flippedImage = new unsigned char[this->width * this->height * 3];
+	if (flippedImage == nullptr) {
+		return; // alloc failure
+	}
 
 	// Do a vertical flip.  You need to use the help variable declared above.
 	// Also do dynamic memory allocation for the variable based on the image size.
+
+	for (int y = 0; y < this->height; y++)
+	{
+		int flipped_y = this->height - y;
+		for (int x = 0; x < this->width * 3; x++)
+		{
+			int image_i = (y * this->width * 3) + x;
+			int flipped_i = (flipped_y * this->width * 3) + x;
+			flippedImage[flipped_i] = this->image[image_i];
+		}
+	}
+
+	// Write flipped pixels into this->image and de-allocate flippedImage
+	for (int y = 0; y < this->height; y++)
+	{
+		int flipped_y = this->height - y;
+		for (int x = 0; x < this->width * 3; x++)
+		{
+			int i = (y * this->width * 3) + x;
+			this->image[i] = flippedImage[i];
+		}
+	}
+
+	//delete[] flippedImage;
+
 }
