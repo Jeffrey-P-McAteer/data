@@ -142,21 +142,25 @@ void PPMImage::VerticalFlip()
 		{
 			int image_i = (y * this->width * 3) + x;
 			int flipped_i = (flipped_y * this->width * 3) + x;
-			flippedImage[flipped_i] = this->image[image_i];
+			if (flipped_i < this->width * this->height * 3) {
+				flippedImage[flipped_i] = this->image[image_i];
+			}
 		}
 	}
 
-	// Write flipped pixels into this->image and de-allocate flippedImage
+	// Write flipped pixels back into this->image and de-allocate flippedImage
 	for (int y = 0; y < this->height; y++)
 	{
 		int flipped_y = this->height - y;
 		for (int x = 0; x < this->width * 3; x++)
 		{
 			int i = (y * this->width * 3) + x;
-			this->image[i] = flippedImage[i];
+			if (i < this->width * this->height * 3) {
+				this->image[i] = flippedImage[i];
+			}
 		}
 	}
 
-	//delete[] flippedImage;
+	delete[] flippedImage;
 
 }
