@@ -147,10 +147,6 @@ void Billboard::Draw()
   // Performance improvement for animated items
   GLuint active_gl_tex = this->ActiveTextureNumber();
 
-  if (this->IsAnimated()) {
-    std::cout << "animated active_gl_tex=" << active_gl_tex << std::endl;
-  }
-
   if (this->gl_texture_num_to_list_ids.count(active_gl_tex)) {
     glCallList(this->gl_texture_num_to_list_ids[active_gl_tex]);
     return;
