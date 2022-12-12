@@ -28,7 +28,7 @@ void Billboard::ReadFile(string fileName)
 
         // Push textureNumber into 
         this->textureNumbers.push_back(this->textureNumber);
-        
+
         //std::cout << "this->textureNumber = " << this->textureNumber << std::endl;
         
       }
@@ -75,6 +75,7 @@ void Billboard::ReadFile(string fileName)
 
   glGenTextures(1, &this->textureNumber);
   glBindTexture(GL_TEXTURE_2D, this->textureNumber);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->textureImage.width, this->textureImage.height, 0, 
     GL_RGB, GL_UNSIGNED_BYTE, this->textureImage.image);
 
