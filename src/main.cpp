@@ -38,6 +38,7 @@ TrafficLight trafficLight;
 Billboard billboard_a;
 Billboard billboard_b;
 Billboard billboard_c;
+Billboard barber_billboard;
 
 ObjModel bench01;
 
@@ -235,6 +236,10 @@ void drawScene()
 	glPushMatrix();
 		billboard_c.Draw();
 		//glCallList(billboard_cID);
+	glPopMatrix();
+
+	glPushMatrix();
+		barber_billboard.Draw();
 	glPopMatrix();
 
 
@@ -807,6 +812,12 @@ int main(int argc, char** argv)
 	billboard_c.SetSize(12.0, -1);
 	billboard_c.SetLocation({-30.0f, 4.2f, 2.0f}); // y value indicates billboard height
 	billboard_c.SetOrientation(270.0f + 45.0f);
+
+	barber_billboard.ReadFile(models_directory+std::filesystem::path::preferred_separator+"barber");
+	barber_billboard.SetDelayMs(90);
+	barber_billboard.SetSize(2.0, -1);
+	barber_billboard.SetLocation({24.0f, 2.2f, 8.0f}); // y value indicates billboard height
+	barber_billboard.SetOrientation(270.0f + 45.0f);
 
 	// Bonus models
 	// https://www.cgtrader.com/free-3d-models/plant/conifer/2-diffrent-tree-kousa-dogwood
