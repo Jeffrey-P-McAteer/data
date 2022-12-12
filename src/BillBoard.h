@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <map>
 #include <GL/glut.h>
 
 #include "PPMImage.h"
@@ -19,6 +21,9 @@ public:
 	void SetLocation(Vector3 location);
 	void SetOrientation(float orientation);
 	void Draw();
+	bool IsAnimated();
+	GLuint ActiveTextureNumber();
+	void SetDelayMs(int delay_ms);
 
 private:
 	PPMImage textureImage;
@@ -27,5 +32,11 @@ private:
 	Vector3 location;
 	float orientation;
 	GLuint textureNumber;
+	std::vector<GLuint> textureNumbers; // Used when we have an animated sign
+	int delay_ms; // used for rotating files when ReadFile() is given a directory.
+
+	// Optimization that lets us pretend we're a dynamic, expensive object
+	// but actually re-use gl lists so we only need to by expensive once.
+	map<GLuint, int> gl_texture_num_to_list_ids;
 };
 

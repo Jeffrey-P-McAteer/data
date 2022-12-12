@@ -37,11 +37,13 @@ ObjModel surveillanceCamera;
 TrafficLight trafficLight;
 Billboard billboard_a;
 Billboard billboard_b;
+Billboard billboard_c;
 
 ObjModel bench01;
 
 int billboard_aID;
 int billboard_bID;
+int billboard_cID;
 int carID; ///< Display List ID for car
 int surveillanceCameraID; ///< Display list ID for surveillance camera
 int terrainID; ///< Display list ID for terrain
@@ -228,6 +230,11 @@ void drawScene()
 	glPushMatrix();
 		//billboard_b.Draw();
 		glCallList(billboard_bID);
+	glPopMatrix();
+
+	glPushMatrix();
+		billboard_c.Draw();
+		//glCallList(billboard_cID);
 	glPopMatrix();
 
 
@@ -420,6 +427,11 @@ void init()
 	glNewList(billboard_bID, GL_COMPILE);
 	billboard_b.Draw();
 	glEndList();
+
+	// billboard_cID = glGenLists(1);
+	// glNewList(billboard_cID, GL_COMPILE);
+	// billboard_c.Draw();
+	// glEndList();
 
 
 }
@@ -785,15 +797,21 @@ int main(int argc, char** argv)
 	billboard_a.SetOrientation(270.0f + 45.0f);
 
 	billboard_b.ReadFile(models_directory+std::filesystem::path::preferred_separator+"speed-limit-25.jpg");
-	billboard_b.SetSize(-1, 2.0);
-	billboard_b.SetLocation({-20.0f, 4.2f, -16.0f}); // y value indicates billboard height
-	billboard_b.SetOrientation(270.0f + 45.0f);
+	//billboard_b.SetSize(-1, 2.0);
+	billboard_b.SetSize(2.0, 2.0);
+	billboard_b.SetLocation({-20.0f, 3.2f, -12.0f}); // y value indicates billboard height
+	billboard_b.SetOrientation(270.0f);
+
+	billboard_c.ReadFile(models_directory+std::filesystem::path::preferred_separator+"animated_billboard_diner");
+	billboard_c.SetDelayMs(250);
+	billboard_c.SetSize(12.0, -1);
+	billboard_c.SetLocation({-30.0f, 4.2f, 2.0f}); // y value indicates billboard height
+	billboard_c.SetOrientation(270.0f + 45.0f);
 
 	// Bonus models
 	// https://www.cgtrader.com/free-3d-models/plant/conifer/2-diffrent-tree-kousa-dogwood
 	bench01.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Bench.obj");
 
-	std::cout << "before init()" << std::endl;
 	init();
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
