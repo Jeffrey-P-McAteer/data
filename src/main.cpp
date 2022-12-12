@@ -441,7 +441,8 @@ void init()
 
 }
 
-
+std::string addtl_hud_msg;
+bool car_snapshot_taken;
 
 /// Display callback.
 /// Displays 4 viewports.  For for each viewport, set up position and size, projection, 
@@ -455,6 +456,7 @@ void display()
 	stringstream ss;
 	ss << "Heading: " << heading_to_string(carDirection);
 	ss << "    Speed: " << localCarSpeed.y << " m/h";
+	ss << addtl_hud_msg;
 
 	//glDisable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_2D);
@@ -703,6 +705,37 @@ void update()
 		// States circle back
 	}
 
+	// Is the car within 45 degrees of ns/ew orientation, within the box, and the associated signal is red?
+	// Snapshot!
+	bool car_is_ns = ((int) (carDirection / 90.0)) % 2 == 0;
+	bool car_within_box = (
+		carPosition.x < 20.0 && carPosition.x > -3.0 &&
+		carPosition.z < 20.0 && carPosition.z > -3.0
+	);
+	bool set_hud_msg = false;
+	if (car_is_ns && car_within_box && NS_Signal == Red) {
+		set_hud_msg = true;
+		addtl_hud_msg = " Illegal car position!";
+		if (!car_snapshot_taken) {
+			car_snapshot_taken = true;
+			save_snapshot();
+		}
+	}
+	if (!car_is_ns && car_within_box && WE_Signal == Red) {
+		set_hud_msg = true;
+		addtl_hud_msg = " Illegal car position!";
+		if (!car_snapshot_taken) {
+			car_snapshot_taken = true;
+			save_snapshot();
+		}
+	}
+
+	if (!set_hud_msg) {
+		addtl_hud_msg = "";
+		car_snapshot_taken = false;
+	}
+
+
 }
 
 void save_snapshot() {
@@ -822,6 +855,9 @@ int main(int argc, char** argv)
 	// Bonus models
 	// https://www.cgtrader.com/free-3d-models/plant/conifer/2-diffrent-tree-kousa-dogwood
 	bench01.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Bench.obj");
+
+	car_snapshot_taken = false;
+	addtl_hud_msg = "";
 
 	init();
 	glutDisplayFunc(display);
