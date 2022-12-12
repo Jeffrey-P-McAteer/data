@@ -35,16 +35,16 @@ int updateInterval = 20; ///< Update interval for the update function in milisec
 ObjModel car;
 ObjModel surveillanceCamera;
 TrafficLight trafficLight;
-Billboard billboard_a;
-Billboard billboard_b;
-Billboard billboard_c;
+Billboard odu_billboard;
+Billboard speed_limit_sign;
+Billboard bodericks_diner_billboard;
 Billboard barber_billboard;
 
 ObjModel bench01;
 
-int billboard_aID;
-int billboard_bID;
-int billboard_cID;
+int odu_billboardID;
+int speed_limit_signID;
+int bodericks_diner_billboardID;
 int carID; ///< Display List ID for car
 int surveillanceCameraID; ///< Display list ID for surveillance camera
 int terrainID; ///< Display list ID for terrain
@@ -224,18 +224,18 @@ void drawScene()
 
 	// Draw all billboard objects
 	glPushMatrix();
-		//billboard_a.Draw();
-		glCallList(billboard_aID);
+		//odu_billboard.Draw();
+		glCallList(odu_billboardID);
 	glPopMatrix();
 
 	glPushMatrix();
-		//billboard_b.Draw();
-		glCallList(billboard_bID);
+		//speed_limit_sign.Draw();
+		glCallList(speed_limit_signID);
 	glPopMatrix();
 
 	glPushMatrix();
-		billboard_c.Draw();
-		//glCallList(billboard_cID);
+		bodericks_diner_billboard.Draw();
+		//glCallList(bodericks_diner_billboardID);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -423,19 +423,19 @@ void init()
 	draw_terrain(0.02);
 	glEndList();
 
-	billboard_aID = glGenLists(1);
-	glNewList(billboard_aID, GL_COMPILE);
-	billboard_a.Draw();
+	odu_billboardID = glGenLists(1);
+	glNewList(odu_billboardID, GL_COMPILE);
+	odu_billboard.Draw();
 	glEndList();
 
-	billboard_bID = glGenLists(1);
-	glNewList(billboard_bID, GL_COMPILE);
-	billboard_b.Draw();
+	speed_limit_signID = glGenLists(1);
+	glNewList(speed_limit_signID, GL_COMPILE);
+	speed_limit_sign.Draw();
 	glEndList();
 
-	// billboard_cID = glGenLists(1);
-	// glNewList(billboard_cID, GL_COMPILE);
-	// billboard_c.Draw();
+	// bodericks_diner_billboardID = glGenLists(1);
+	// glNewList(bodericks_diner_billboardID, GL_COMPILE);
+	// bodericks_diner_billboard.Draw();
 	// glEndList();
 
 
@@ -829,22 +829,22 @@ int main(int argc, char** argv)
 	surveillanceCamera.ReadFile(models_directory+"/camera.obj");
 
 	// Define billboard object details
-	billboard_a.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Old-Dominion-Monarchs-logo.jpg");
-	billboard_a.SetSize(14.0, -1);
-	billboard_a.SetLocation({0.0f, 5.2f, -20.0f}); // y value indicates billboard height
-	billboard_a.SetOrientation(270.0f + 45.0f);
+	odu_billboard.ReadFile(models_directory+std::filesystem::path::preferred_separator+"Old-Dominion-Monarchs-logo.jpg");
+	odu_billboard.SetSize(14.0, -1);
+	odu_billboard.SetLocation({0.0f, 5.2f, -20.0f}); // y value indicates billboard height
+	odu_billboard.SetOrientation(270.0f + 45.0f);
 
-	billboard_b.ReadFile(models_directory+std::filesystem::path::preferred_separator+"speed-limit-25.jpg");
-	//billboard_b.SetSize(-1, 2.0);
-	billboard_b.SetSize(2.0, 2.0);
-	billboard_b.SetLocation({-20.0f, 3.2f, -12.0f}); // y value indicates billboard height
-	billboard_b.SetOrientation(270.0f);
+	speed_limit_sign.ReadFile(models_directory+std::filesystem::path::preferred_separator+"speed-limit-25.jpg");
+	//speed_limit_sign.SetSize(-1, 2.0);
+	speed_limit_sign.SetSize(2.0, 2.0);
+	speed_limit_sign.SetLocation({-20.0f, 3.2f, -12.0f}); // y value indicates billboard height
+	speed_limit_sign.SetOrientation(270.0f);
 
-	billboard_c.ReadFile(models_directory+std::filesystem::path::preferred_separator+"animated_billboard_diner");
-	billboard_c.SetDelayMs(250);
-	billboard_c.SetSize(12.0, -1);
-	billboard_c.SetLocation({-30.0f, 4.2f, 2.0f}); // y value indicates billboard height
-	billboard_c.SetOrientation(270.0f + 45.0f);
+	bodericks_diner_billboard.ReadFile(models_directory+std::filesystem::path::preferred_separator+"animated_billboard_diner");
+	bodericks_diner_billboard.SetDelayMs(250);
+	bodericks_diner_billboard.SetSize(12.0, -1);
+	bodericks_diner_billboard.SetLocation({-30.0f, 4.2f, 2.0f}); // y value indicates billboard height
+	bodericks_diner_billboard.SetOrientation(270.0f + 45.0f);
 
 	barber_billboard.ReadFile(models_directory+std::filesystem::path::preferred_separator+"barber");
 	barber_billboard.SetDelayMs(90);
